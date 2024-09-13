@@ -1,7 +1,6 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from datasets import load_dataset
 from transformers import Trainer, TrainingArguments
-import optuna
 import torch
 
 # Load the tokenizer and model
@@ -65,10 +64,11 @@ trainer = Trainer(
 # Train the model
 trainer.train()
 
-# Save the model and tokenizer
-model.save_pretrained('./finetuned_gpt2')
-tokenizer.save_pretrained('./finetuned_gpt2')
+# Save the model and tokenizer in PyTorch .bin format (this is done by default)
+model.save_pretrained('./finetuned_gpt2', safe_serialization=False)  # Saves as pytorch_model.bin
+tokenizer.save_pretrained('./finetuned_gpt2')  # Saves tokenizer-related files
 
+# Function to generate a response using GPT-2
 def generate_response(prompt):
     # Ensure the model and inputs are on the same device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
